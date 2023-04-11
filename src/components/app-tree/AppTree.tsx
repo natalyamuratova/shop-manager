@@ -2,19 +2,6 @@ import React from 'react';
 import Tree from 'react-d3-tree';
 import './app-tree.css';
 
-const data = {
-    name: 'Молочные продукты',
-    children: [
-        {
-            name: 'Творог',
-            children: [
-                { name: 'Иван Поддубный' },
-                { name: 'Вкуснотеево' },
-            ],
-        },
-    ],
-};
-
 export interface TreeData {
     id?: string;
     name: string;
