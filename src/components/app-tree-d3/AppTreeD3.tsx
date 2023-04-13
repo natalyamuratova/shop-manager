@@ -1,8 +1,8 @@
 import React, {useEffect, useRef} from "react";
 import {TreeData} from "../app-tree/AppTree";
 import * as d3 from "d3";
-import './app-tree-d3.css';
 import {HierarchyCircularLink, HierarchyCircularNode} from "d3";
+import './app-tree-d3.css';
 
 interface AppTreeProps {
     data: TreeData;
@@ -19,8 +19,6 @@ export const AppTreeD3 = (props: AppTreeProps) => {
         treeLayout(root);
 
         const linkGenerator = d3.linkHorizontal<HierarchyCircularLink<TreeData>, HierarchyCircularNode<TreeData>>()
-            // .source(link => link.source)
-            //  .target(link => link.target)
             .x(node => node.y)
             .y(node => node.x);
 
@@ -33,7 +31,12 @@ export const AppTreeD3 = (props: AppTreeProps) => {
             .attr("r", 4)
             .attr("fill", "black")
             .attr("cx", node => node.y)
-            .attr("cy", node => node.x);
+            .attr("cy", node => node.x)
+            .attr("opacity", 0)
+            .transition()
+            .duration(500)
+            .delay((node) => node.depth * 500)
+            .attr("opacity", 1);
 
         svg
             .selectAll(".link")
@@ -42,7 +45,18 @@ export const AppTreeD3 = (props: AppTreeProps) => {
             .attr("class", "link")
             .attr("fill", "none")
             .attr("stroke", "black")
-            .attr("d", linkGenerator);
+            .attr("d", linkGenerator)
+            .attr("stroke-dasharray", function () {
+                const length = (this as SVGGeometryElement).getTotalLength();
+                return `${length} ${length}`
+            })
+            .attr("stroke-dashoffset", function () {
+                return (this as SVGGeometryElement).getTotalLength();
+            })
+            .transition()
+            .duration(500)
+            .delay((link) => link.source.depth * 500)
+            .attr("stroke-dashoffset", 0);
 
         svg
             .selectAll(".label")
@@ -53,7 +67,12 @@ export const AppTreeD3 = (props: AppTreeProps) => {
             .attr("text-anchor", "middle")
             .attr("font-size", 18)
             .attr("x", node => node.y)
-            .attr("y", node => node.x - 10);
+            .attr("y", node => node.x - 10)
+            .attr("opacity", 0)
+            .transition()
+            .duration(500)
+            .delay((node) => node.depth * 500)
+            .attr("opacity", 1);
 
 
     }, [props.data]);
