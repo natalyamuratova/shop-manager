@@ -3,6 +3,8 @@ import {TreeData} from "../app-tree/AppTree";
 import * as d3 from "d3";
 import './app-tree-d3.css';
 import {HierarchyCircularNode} from "d3";
+import {DefaultLinkObject} from "d3-shape";
+import {HierarchyCircularLink} from "d3-hierarchy";
 
 interface AppTreeProps {
     data: TreeData;
@@ -18,6 +20,12 @@ export const AppTreeD3 = (props: AppTreeProps) => {
 
         treeLayout(root);
 
+        const linkGenerator = d3.linkVertical<HierarchyCircularLink<TreeData>, HierarchyCircularNode<TreeData>>()
+            // .source(link => link.source)
+            //  .target(link => link.target)
+            .x(node => node.x)
+            .y(node => node.y);
+
         const svg = d3.select(svgRef.current);
         svg
             .selectAll(".node")
@@ -29,11 +37,16 @@ export const AppTreeD3 = (props: AppTreeProps) => {
             .attr("cx", node => (node as HierarchyCircularNode<TreeData>)?.x)
             .attr("cy", node => (node as HierarchyCircularNode<TreeData>)?.y);
 
-        const linkGenerator = d3.linkVertical()
-           // .source(link => link.source)
-          //  .target(link => link.target)
-            .x(node => node[0])
-            .y(node => node[1]);
+        svg
+            .selectAll(".link")
+            .data<HierarchyCircularLink<TreeData>>(root.links() as HierarchyCircularLink<TreeData>[])
+            .join("path")
+            .attr("class", "link")
+            .attr("fill", "none")
+            .attr("stroke", "black")
+            .attr("d", linkGenerator);
+
+
 
     }, [props.data]);
 
