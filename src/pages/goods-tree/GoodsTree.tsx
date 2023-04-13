@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './goods-tree.css';
 import dataJson from '../../data.json';
 import {AppTree, TreeData} from "../../components/app-tree/AppTree";
@@ -47,10 +47,11 @@ const buildTreeData: (data: Good[]) => TreeData = (data: Good[]) => {
 
 
 export const GoodsTree = () => {
-    const tree = buildTreeData(dataJson);
+    const initialData = buildTreeData(dataJson);
+    const [data, setData] = useState(initialData);
 
-        // <AppTree data={tree}/>
+        // <AppTree data={data}/>
     return (
-        <AppTreeD3 data={tree}></AppTreeD3>
+        <AppTreeD3 data={data}></AppTreeD3>
     );
 }
