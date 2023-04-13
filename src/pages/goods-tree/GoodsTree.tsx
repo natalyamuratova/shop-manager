@@ -2,6 +2,7 @@ import React from 'react';
 import './goods-tree.css';
 import dataJson from '../../data.json';
 import {AppTree, TreeData} from "../../components/app-tree/AppTree";
+import {AppTreeD3} from "../../components/app-tree-d3/AppTreeD3";
 
 interface Good {
     id: string;
@@ -43,10 +44,13 @@ const buildTreeData: (data: Good[]) => TreeData = (data: Good[]) => {
     return tree;
 }
 
+
+
 export const GoodsTree = () => {
     const tree = buildTreeData(dataJson);
 
+        // <AppTree data={tree}/>
     return (
-        <AppTree data={tree}/>
+        <AppTreeD3 data={tree}></AppTreeD3>
     );
 }
