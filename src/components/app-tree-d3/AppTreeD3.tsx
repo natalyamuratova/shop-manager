@@ -2,9 +2,7 @@ import React, {useEffect, useRef} from "react";
 import {TreeData} from "../app-tree/AppTree";
 import * as d3 from "d3";
 import './app-tree-d3.css';
-import {HierarchyCircularNode} from "d3";
-import {DefaultLinkObject} from "d3-shape";
-import {HierarchyCircularLink} from "d3-hierarchy";
+import {HierarchyCircularLink, HierarchyCircularNode} from "d3";
 
 interface AppTreeProps {
     data: TreeData;
@@ -20,22 +18,22 @@ export const AppTreeD3 = (props: AppTreeProps) => {
 
         treeLayout(root);
 
-        const linkGenerator = d3.linkVertical<HierarchyCircularLink<TreeData>, HierarchyCircularNode<TreeData>>()
+        const linkGenerator = d3.linkHorizontal<HierarchyCircularLink<TreeData>, HierarchyCircularNode<TreeData>>()
             // .source(link => link.source)
             //  .target(link => link.target)
-            .x(node => node.x)
-            .y(node => node.y);
+            .x(node => node.y)
+            .y(node => node.x);
 
         const svg = d3.select(svgRef.current);
         svg
             .selectAll(".node")
-            .data(root.descendants())
+            .data<HierarchyCircularNode<TreeData>>(root.descendants() as HierarchyCircularNode<TreeData>[])
             .join("circle")
             .attr("class", "node")
             .attr("r", 4)
             .attr("fill", "black")
-            .attr("cx", node => (node as HierarchyCircularNode<TreeData>)?.x)
-            .attr("cy", node => (node as HierarchyCircularNode<TreeData>)?.y);
+            .attr("cx", node => node.y)
+            .attr("cy", node => node.x);
 
         svg
             .selectAll(".link")
@@ -46,6 +44,16 @@ export const AppTreeD3 = (props: AppTreeProps) => {
             .attr("stroke", "black")
             .attr("d", linkGenerator);
 
+        svg
+            .selectAll(".label")
+            .data<HierarchyCircularNode<TreeData>>(root.descendants() as HierarchyCircularNode<TreeData>[])
+            .join("text")
+            .attr("class", "label")
+            .text(node => node.data.name)
+            .attr("text-anchor", "middle")
+            .attr("font-size", 18)
+            .attr("x", node => node.y)
+            .attr("y", node => node.x - 10);
 
 
     }, [props.data]);
