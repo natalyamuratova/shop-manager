@@ -3,9 +3,11 @@ import {TreeData} from "../app-tree/AppTree";
 import * as d3 from "d3";
 import {HierarchyCircularLink, HierarchyCircularNode} from "d3";
 import './app-tree-d3.css';
+import {HierarchyNode} from "d3-hierarchy";
 
 interface AppTreeProps {
     data: TreeData;
+    onNodeClick?: (node: TreeData) => void;
 }
 
 export const AppTreeD3 = (props: AppTreeProps) => {
@@ -28,7 +30,7 @@ export const AppTreeD3 = (props: AppTreeProps) => {
             .data<HierarchyCircularNode<TreeData>>(root.descendants() as HierarchyCircularNode<TreeData>[])
             .join("circle")
             .attr("class", "node")
-            .attr("r", 4)
+            .attr("r", 10)
             .attr("fill", "black")
             .attr("cx", node => node.y)
             .attr("cy", node => node.x)
@@ -37,6 +39,14 @@ export const AppTreeD3 = (props: AppTreeProps) => {
             .duration(500)
             .delay((node) => node.depth * 500)
             .attr("opacity", 1);
+
+        if (props.onNodeClick) {
+            svg
+                .selectAll(".node")
+                .on("click", (event: PointerEvent, node: unknown) => {
+                    props?.onNodeClick?.((node as HierarchyCircularNode<TreeData>).data);
+                });
+        }
 
         svg
             .selectAll(".link")

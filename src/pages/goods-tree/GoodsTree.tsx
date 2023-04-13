@@ -50,8 +50,14 @@ export const GoodsTree = () => {
     const initialData = buildTreeData(dataJson);
     const [data, setData] = useState(initialData);
 
+    const nodeClickHandler = (node: TreeData) => {
+        console.log(node);
+    };
+
         // <AppTree data={data}/>
     return (
-        <AppTreeD3 data={data}></AppTreeD3>
+        <AppTreeD3 data={data}
+                   onNodeClick={nodeClickHandler}
+        ></AppTreeD3>
     );
 }
