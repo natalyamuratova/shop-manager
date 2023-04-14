@@ -45,6 +45,23 @@ const buildTreeData: (data: Good[]) => TreeData = (data: Good[]) => {
 	return tree;
 };
 
+const convertTreeToArray: (tree: TreeData) => Good[] = (tree: TreeData) => {
+	const items = [];
+	for (const clusterEl of tree.children) {
+		for (const groupEl of clusterEl.children) {
+			for (const itemEl of groupEl.children) {
+				const item: Good = {
+					id: itemEl.id ?? '',
+					name: itemEl.name,
+					group: groupEl.name,
+					cluster: clusterEl.name,
+				};
+				items.push(item);
+			}
+		}
+	}
+	return items;
+};
 
 
 export const GoodsTree = () => {
