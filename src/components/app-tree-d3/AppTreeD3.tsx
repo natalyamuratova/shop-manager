@@ -3,6 +3,8 @@ import { TreeData } from '../app-tree/AppTree';
 import * as d3 from 'd3';
 import { HierarchyCircularLink, HierarchyCircularNode } from 'd3';
 import './app-tree-d3.css';
+import { Selection } from 'd3-selection';
+import { HierarchyNode } from 'd3-hierarchy';
 
 export type TreeNodeEventClickCallback = (node: HierarchyCircularNode<TreeData>, event: PointerEvent) => any;
 export type TreeLinkEventClickCallback = (sourceNode: HierarchyCircularNode<TreeData>, targetNode: HierarchyCircularNode<TreeData>, event: PointerEvent) => any;
@@ -16,21 +18,11 @@ interface AppTreeProps {
 }
 
 export const AppTreeD3 = (props: AppTreeProps) => {
+	const { data } = props;
 	const wrapperRef = useRef(null);
 	const svgRef = useRef(null);
 
-	useEffect(() => {
-		const root = d3.hierarchy(props.data);
-		const treeLayout = d3.tree().size([500, 500]);
-
-		treeLayout(root);
-
-		const linkGenerator = d3.linkHorizontal<HierarchyCircularLink<TreeData>, HierarchyCircularNode<TreeData>>()
-			.x(node => node.y)
-			.y(node => node.x);
-
-		const svg = d3.select(svgRef.current);
-
+	const buildNodes = (svg: Selection<Element | null, unknown, null, undefined>, root: HierarchyNode<TreeData>) => {
 		const nodes = svg.selectAll('.node');
 		nodes.data<HierarchyCircularNode<TreeData>>(root.descendants() as HierarchyCircularNode<TreeData>[])
 			.join('circle')
@@ -54,6 +46,12 @@ export const AppTreeD3 = (props: AppTreeProps) => {
 				props?.onNodeClick?.((node as HierarchyCircularNode<TreeData>), event);
 			});
 		}
+	};
+
+	const buildLinks  = (svg: Selection<Element | null, unknown, null, undefined>, root: HierarchyNode<TreeData>) => {
+		const linkGenerator = d3.linkHorizontal<HierarchyCircularLink<TreeData>, HierarchyCircularNode<TreeData>>()
+			.x(node => node.y)
+			.y(node => node.x);
 
 		const links = svg.selectAll('.link');
 		links.data<HierarchyCircularLink<TreeData>>(root.links() as HierarchyCircularLink<TreeData>[])
@@ -84,7 +82,9 @@ export const AppTreeD3 = (props: AppTreeProps) => {
 				props?.onLinkClick?.(source, target, event);
 			});
 		}
+	};
 
+	const buildLabels = (svg: Selection<Element | null, unknown, null, undefined>, root: HierarchyNode<TreeData>) => {
 		svg
 			.selectAll('.label')
 			.data<HierarchyCircularNode<TreeData>>(root.descendants() as HierarchyCircularNode<TreeData>[])
@@ -100,9 +100,25 @@ export const AppTreeD3 = (props: AppTreeProps) => {
 			.duration(500)
 			.delay((node) => node.depth * 500)
 			.attr('opacity', 1);
+	};
 
+	const buildTree = () => {
+		const root = d3.hierarchy(props.data);
+		const treeLayout = d3.tree().size([500, 500]);
 
-	}, [props.data]);
+		treeLayout(root);
+
+		// console.log(svgRef.current);
+		const svg = d3.select<Element | null, unknown>(svgRef.current);
+		buildNodes(svg, root);
+		buildLinks(svg, root);
+		buildLabels(svg, root);
+		// console.log(svgRef.current);
+	};
+
+	useEffect(() => {
+		buildTree();
+	}, [data]);
 
 	return (
 		<div ref={wrapperRef}
