@@ -63,11 +63,14 @@ export const GoodsTree = () => {
 	};
 
 	return (
-	// <AppTree data={data}
-	//          onNodeClick={nodeClickHandler}/>
-		<AppTreeD3 data={data}
-			onNodeClick={nodeClickHandler}
-			onLinkClick={linkClickHandler}
-		></AppTreeD3>
+		<>
+			<AppTreeD3 data={data}
+				onNodeClick={nodeClickHandler}
+				onLinkClick={linkClickHandler}
+			></AppTreeD3>
+			<button onClick={() => setData(initialData.children[0])}>
+				Update data
+			</button>
+		</>
 	);
 };
