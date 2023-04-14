@@ -24,10 +24,24 @@ export const treeSlice = createSlice({
 		},
 		setTree: (state: TreeState, action: PayloadAction<TreeData>) => {
 			state.value = action.payload;
+		},
+		deleteLink: (state: TreeState, action: PayloadAction<{ source: TreeData, target: TreeData }>) => {
+			const { source, target } = action.payload;
+
+			const filterChild = (node: TreeData) => {
+				if (node.children) {
+					node.children.forEach(child => filterChild(child));
+				}
+				if (node.id === source.id) {
+					node.children = node.children.filter(child => child.id !== target.id);
+				}
+			};
+
+			filterChild(state.value);
 		}
-	}
+	},
 });
 
-export const { buildTree, setTree } = treeSlice.actions;
+export const { buildTree, setTree, deleteLink } = treeSlice.actions;
 
 export default treeSlice.reducer;

@@ -8,6 +8,7 @@ export const convertArrayToTree: (data: Item[]) => TreeData = (data: Item[]) => 
 		let cluster = tree.children.find((cl) => cl.name === el.cluster);
 		if (!cluster) {
 			cluster = {
+				id: crypto.randomUUID(),
 				name: el.cluster,
 				children: []
 			};
@@ -16,6 +17,7 @@ export const convertArrayToTree: (data: Item[]) => TreeData = (data: Item[]) => 
 		let group = cluster.children.find((gr) => gr.name === el.group);
 		if (!group) {
 			group = {
+				id: crypto.randomUUID(),
 				name: el.group,
 				children: [],
 			};
