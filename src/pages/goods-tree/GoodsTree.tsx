@@ -1,24 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import './goods-tree.css';
 import { AppTreeD3 } from '../../components/app-tree-d3/AppTreeD3';
 import { HierarchyCircularNode } from 'd3';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import buildTreeData from '../../utils/build-tree-data';
 import TreeData from '../../models/tree-data';
+import { buildTree } from '../../store/tree/tree-slice';
 
 export const GoodsTree = () => {
-	const items = useSelector((state: RootState) => state.items.value);
-	const [treeData, setTreeData] = useState<TreeData>(buildTreeData(items));
-
-	const firstRender = useRef(true);
-	useEffect(() => {
-		if (firstRender.current) {
-			firstRender.current = false;
-			return;
-		}
-		setTreeData(buildTreeData(items));
-	}, [items]);
+	const dispatch = useDispatch();
+	const tree = useSelector((state: RootState) => state.tree.value);
 
 	const nodeClickHandler = (node: HierarchyCircularNode<TreeData>, event: PointerEvent) => {
 		console.log(node);
@@ -33,11 +24,11 @@ export const GoodsTree = () => {
 
 	return (
 		<>
-			<AppTreeD3 data={treeData}
+			<AppTreeD3 data={tree}
 				onNodeClick={nodeClickHandler}
 				onLinkClick={linkClickHandler}
 			></AppTreeD3>
-			<button onClick={() => setTreeData(buildTreeData(items))}>
+			<button onClick={() => dispatch(buildTree())}>
 				Update data
 			</button>
 		</>
