@@ -5,7 +5,7 @@ import { HierarchyCircularNode } from 'd3';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import TreeData from '../../models/tree-data';
-import { buildTree, deleteLink } from '../../store/tree/tree-slice';
+import { buildTree, deleteLink, saveTree } from '../../store/tree/tree-slice';
 import { Button, Modal } from 'antd';
 import { getNodeTypeByName, isCluster, isItem } from '../../utils/data-utils';
 
@@ -45,7 +45,7 @@ export const GoodsTree = () => {
 	const nodeModalCancelFn = () => {
 		setIsNodeModalOpen(false);
 	};
-	
+
 	const deleteNodeFromChildren = (nodeData: TreeData) => {
 		let target: TreeData | null = null;
 
@@ -95,6 +95,9 @@ export const GoodsTree = () => {
 			></AppTreeD3>
 			<button onClick={() => dispatch(buildTree())}>
 				Восстановить
+			</button>
+			<button onClick={() => dispatch(saveTree())}>
+				Сохранить дерево
 			</button>
 			<Modal title={linkModalTitle} open={isLinkModalOpen} onOk={linkModalAcceptFn} onCancel={linkModalCancelFn}>
 				<div className="modal-content">
