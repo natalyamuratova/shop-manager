@@ -1,7 +1,7 @@
 import Item from '../models/item';
 import TreeData from '../models/tree-data';
 
-const buildTreeData: (data: Item[]) => TreeData = (data: Item[]) => {
+export const convertArrayToTree: (data: Item[]) => TreeData = (data: Item[]) => {
 	const tree: TreeData = { name: 'Товары', children: [] };
 
 	for (const el of data) {
@@ -34,4 +34,20 @@ const buildTreeData: (data: Item[]) => TreeData = (data: Item[]) => {
 	return tree;
 };
 
-export default buildTreeData;
+const convertTreeToArray: (tree: TreeData) => Item[] = (tree: TreeData) => {
+	const items = [];
+	for (const clusterEl of tree.children) {
+		for (const groupEl of clusterEl.children) {
+			for (const itemEl of groupEl.children) {
+				const item: Item = {
+					id: itemEl.id ?? '',
+					name: itemEl.name,
+					group: groupEl.name,
+					cluster: clusterEl.name,
+				};
+				items.push(item);
+			}
+		}
+	}
+	return items;
+};
