@@ -20,7 +20,9 @@
   "scripts": {
     "start": "vite --host",
     "build": "tsc && vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "lint": "eslint src/**",
+    "lint:fix": "eslint src/** --fix"
   },
   "eslintConfig": {
     "extends": [
