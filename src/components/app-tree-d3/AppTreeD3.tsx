@@ -17,8 +17,8 @@ interface AppTreeProps {
 
 export const AppTreeD3 = (props: AppTreeProps) => {
 	const { data } = props;
-	const wrapperRef = useRef(null);
-	const svgRef = useRef(null);
+	const wrapperRef = useRef<HTMLDivElement>(null);
+	const svgRef = useRef<SVGSVGElement>(null);
 
 	const buildNodes = (svg: Selection<Element | null, unknown, null, undefined>, root: HierarchyNode<TreeData>) => {
 		const nodes = svg.selectAll('.node');
@@ -102,7 +102,11 @@ export const AppTreeD3 = (props: AppTreeProps) => {
 
 	const buildTree = () => {
 		const root = d3.hierarchy(props.data);
-		const treeLayout = d3.tree().size([500, 500]);
+
+		const rect = wrapperRef.current?.getBoundingClientRect();
+		const width = rect?.width ?? 500;
+		const height = rect?.height ?? 500;
+		const treeLayout = d3.tree().size([height, width]);
 
 		treeLayout(root);
 
