@@ -10,7 +10,7 @@ import TreeData from '../../models/tree-data';
 export const GoodsTree = () => {
 	const items = useSelector((state: RootState) => state.items.value);
 	const [treeData, setTreeData] = useState<TreeData>(buildTreeData(items));
-	
+
 	const firstRender = useRef(true);
 	useEffect(() => {
 		if (firstRender.current) {
@@ -32,11 +32,14 @@ export const GoodsTree = () => {
 	};
 
 	return (
-	// <AppTree data={data}
-	//          onNodeClick={nodeClickHandler}/>
-		<AppTreeD3 data={treeData}
-			onNodeClick={nodeClickHandler}
-			onLinkClick={linkClickHandler}
-		></AppTreeD3>
+		<>
+			<AppTreeD3 data={treeData}
+				onNodeClick={nodeClickHandler}
+				onLinkClick={linkClickHandler}
+			></AppTreeD3>
+			<button onClick={() => setTreeData(buildTreeData(items))}>
+				Update data
+			</button>
+		</>
 	);
 };
