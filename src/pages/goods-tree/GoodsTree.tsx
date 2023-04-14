@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import './goods-tree.css';
 import dataJson from '../../data.json';
-import {AppTree, TreeData} from '../../components/app-tree/AppTree';
-import {AppTreeD3} from '../../components/app-tree-d3/AppTreeD3';
-import {HierarchyCircularNode} from 'd3';
+import { AppTree, TreeData } from '../../components/app-tree/AppTree';
+import { AppTreeD3 } from '../../components/app-tree-d3/AppTreeD3';
+import { HierarchyCircularNode } from 'd3';
 
 interface Good {
     id: string;

@@ -1,7 +1,7 @@
 import React from 'react';
 import Tree from 'react-d3-tree';
 import './app-tree.css';
-import {TreeNodeEventCallback} from 'react-d3-tree/lib/types/Tree/types';
+import { TreeNodeEventCallback } from 'react-d3-tree/lib/types/Tree/types';
 
 export interface TreeData {
     id?: string;
