@@ -1,15 +1,18 @@
 import React, {useEffect, useRef} from "react";
 import {TreeData} from "../app-tree/AppTree";
 import * as d3 from "d3";
-import {HierarchyCircularLink, HierarchyCircularNode, HierarchyPointNode} from "d3";
+import {HierarchyCircularLink, HierarchyCircularNode} from "d3";
 import './app-tree-d3.css';
 
-export type TreeNodeEventCallback = (node: HierarchyCircularNode<TreeData>, event: PointerEvent) => any;
-export type TreeLinkEventCallback = (sourceNode: HierarchyPointNode<TreeData>, targetNode: HierarchyPointNode<TreeData>, event: PointerEvent) => any;
+export type TreeNodeEventClickCallback = (node: HierarchyCircularNode<TreeData>, event: PointerEvent) => any;
+export type TreeLinkEventClickCallback = (sourceNode: HierarchyCircularNode<TreeData>, targetNode: HierarchyCircularNode<TreeData>, event: PointerEvent) => any;
 
 interface AppTreeProps {
     data: TreeData;
-    onNodeClick?: TreeNodeEventCallback;
+    nodeClickable: boolean;
+    linkClickable: boolean;
+    onNodeClick?: TreeNodeEventClickCallback;
+    onLinkClick?: TreeLinkEventClickCallback;
 }
 
 export const AppTreeD3 = (props: AppTreeProps) => {
@@ -27,9 +30,9 @@ export const AppTreeD3 = (props: AppTreeProps) => {
             .y(node => node.x);
 
         const svg = d3.select(svgRef.current);
-        svg
-            .selectAll(".node")
-            .data<HierarchyCircularNode<TreeData>>(root.descendants() as HierarchyCircularNode<TreeData>[])
+
+        const nodes = svg.selectAll(".node");
+        nodes.data<HierarchyCircularNode<TreeData>>(root.descendants() as HierarchyCircularNode<TreeData>[])
             .join("circle")
             .attr("class", "node")
             .attr("r", 10)
@@ -42,17 +45,18 @@ export const AppTreeD3 = (props: AppTreeProps) => {
             .delay((node) => node.depth * 500)
             .attr("opacity", 1);
 
+        if (props.nodeClickable) {
+            nodes.attr("class", "node-clickable");
+        }
+
         if (props.onNodeClick) {
-            svg
-                .selectAll(".node")
-                .on("click", (event: PointerEvent, node: unknown) => {
+            nodes.on("click", (event: PointerEvent, node: unknown) => {
                     props?.onNodeClick?.((node as HierarchyCircularNode<TreeData>), event);
                 });
         }
 
-        svg
-            .selectAll(".link")
-            .data<HierarchyCircularLink<TreeData>>(root.links() as HierarchyCircularLink<TreeData>[])
+        const links = svg.selectAll(".link");
+        links.data<HierarchyCircularLink<TreeData>>(root.links() as HierarchyCircularLink<TreeData>[])
             .join("path")
             .attr("class", "link")
             .attr("fill", "none")
@@ -69,6 +73,17 @@ export const AppTreeD3 = (props: AppTreeProps) => {
             .duration(500)
             .delay((link) => link.source.depth * 500)
             .attr("stroke-dashoffset", 0);
+
+        if (props.linkClickable) {
+            links.attr("class", "link-clickable");
+        }
+
+        if (props.onLinkClick) {
+            links.on("click", (event: PointerEvent, link: unknown) => {
+                    const { source, target } = link as HierarchyCircularLink<TreeData>;
+                    props?.onLinkClick?.(source, target, event);
+                });
+        }
 
         svg
             .selectAll(".label")
@@ -96,3 +111,4 @@ export const AppTreeD3 = (props: AppTreeProps) => {
         </div>
     );
 }
+AppTreeD3.defaultProps = { nodeClickable: true, linkClickable: false };

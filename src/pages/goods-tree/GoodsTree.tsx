@@ -56,11 +56,18 @@ export const GoodsTree = () => {
         console.log(event);
     };
 
+    const linkClickHandler = (source: HierarchyCircularNode<TreeData>, target: HierarchyCircularNode<TreeData>, event: PointerEvent) => {
+        console.log(source);
+        console.log(target);
+        console.log(event);
+    };
+
     return (
         // <AppTree data={data}
         //          onNodeClick={nodeClickHandler}/>
         <AppTreeD3 data={data}
                    onNodeClick={nodeClickHandler}
+                   onLinkClick={linkClickHandler}
         ></AppTreeD3>
     );
 }

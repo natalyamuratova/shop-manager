@@ -11,10 +11,12 @@ svg {
     height: 100%;
 }
 
-.node {
+.node-clickable:hover {
     cursor: pointer;
+    r: 12;
 }
 
-.node:hover {
-    r: 12;
+.link-clickable:hover {
+    cursor: pointer;
+    stroke-width: 2px;
 }
