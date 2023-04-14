@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import { TreeData } from '../app-tree/AppTree';
 import * as d3 from 'd3';
 import { HierarchyCircularLink, HierarchyCircularNode } from 'd3';
 import './app-tree-d3.css';
+import TreeData from '../../models/tree-data';
 
 export type TreeNodeEventClickCallback = (node: HierarchyCircularNode<TreeData>, event: PointerEvent) => any;
 export type TreeLinkEventClickCallback = (sourceNode: HierarchyCircularNode<TreeData>, targetNode: HierarchyCircularNode<TreeData>, event: PointerEvent) => any;

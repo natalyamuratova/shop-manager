@@ -1,55 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './goods-tree.css';
-import dataJson from '../../data.json';
-import { AppTree, TreeData } from '../../components/app-tree/AppTree';
 import { AppTreeD3 } from '../../components/app-tree-d3/AppTreeD3';
 import { HierarchyCircularNode } from 'd3';
-
-interface Good {
-    id: string;
-    name: string;
-    group: string;
-    cluster: string;
-}
-
-const buildTreeData: (data: Good[]) => TreeData = (data: Good[]) => {
-	const tree: TreeData = { name: '', children: [] };
-
-	for (const el of data) {
-		let cluster = tree.children.find((cl) => cl.name === el.cluster);
-		if (!cluster) {
-			cluster = {
-				name: el.cluster,
-				children: []
-			};
-			tree.children.push(cluster);
-		}
-		let group = cluster.children.find((gr) => gr.name === el.group);
-		if (!group) {
-			group = {
-				name: el.group,
-				children: [],
-			};
-			cluster.children.push(group);
-		}
-		let item = group.children.find((it) => it.id === el.id);
-		if (!item) {
-			item = {
-				id: el.id,
-				name: el.name,
-				children: [],
-			};
-			group.children.push(item);
-		}
-	}
-	return tree;
-};
-
-
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import buildTreeData from '../../utils/build-tree-data';
+import TreeData from '../../models/tree-data';
 
 export const GoodsTree = () => {
-	const initialData = buildTreeData(dataJson);
-	const [data, setData] = useState(initialData);
+	const items = useSelector((state: RootState) => state.items.value);
+	const [treeData, setTreeData] = useState<TreeData>(buildTreeData(items));
+	
+	const firstRender = useRef(true);
+	useEffect(() => {
+		if (firstRender.current) {
+			firstRender.current = false;
+			return;
+		}
+		setTreeData(buildTreeData(items));
+	}, [items]);
 
 	const nodeClickHandler = (node: HierarchyCircularNode<TreeData>, event: PointerEvent) => {
 		console.log(node);
@@ -65,7 +34,7 @@ export const GoodsTree = () => {
 	return (
 	// <AppTree data={data}
 	//          onNodeClick={nodeClickHandler}/>
-		<AppTreeD3 data={data}
+		<AppTreeD3 data={treeData}
 			onNodeClick={nodeClickHandler}
 			onLinkClick={linkClickHandler}
 		></AppTreeD3>
