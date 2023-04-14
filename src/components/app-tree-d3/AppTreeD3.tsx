@@ -1,13 +1,15 @@
 import React, {useEffect, useRef} from "react";
 import {TreeData} from "../app-tree/AppTree";
 import * as d3 from "d3";
-import {HierarchyCircularLink, HierarchyCircularNode} from "d3";
+import {HierarchyCircularLink, HierarchyCircularNode, HierarchyPointNode} from "d3";
 import './app-tree-d3.css';
-import {HierarchyNode} from "d3-hierarchy";
+
+export type TreeNodeEventCallback = (node: HierarchyCircularNode<TreeData>, event: PointerEvent) => any;
+export type TreeLinkEventCallback = (sourceNode: HierarchyPointNode<TreeData>, targetNode: HierarchyPointNode<TreeData>, event: PointerEvent) => any;
 
 interface AppTreeProps {
     data: TreeData;
-    onNodeClick?: (node: TreeData) => void;
+    onNodeClick?: TreeNodeEventCallback;
 }
 
 export const AppTreeD3 = (props: AppTreeProps) => {
@@ -44,7 +46,7 @@ export const AppTreeD3 = (props: AppTreeProps) => {
             svg
                 .selectAll(".node")
                 .on("click", (event: PointerEvent, node: unknown) => {
-                    props?.onNodeClick?.((node as HierarchyCircularNode<TreeData>).data);
+                    props?.onNodeClick?.((node as HierarchyCircularNode<TreeData>), event);
                 });
         }
 
@@ -77,7 +79,7 @@ export const AppTreeD3 = (props: AppTreeProps) => {
             .attr("text-anchor", "middle")
             .attr("font-size", 18)
             .attr("x", node => node.y)
-            .attr("y", node => node.x - 10)
+            .attr("y", node => node.x - 15)
             .attr("opacity", 0)
             .transition()
             .duration(500)

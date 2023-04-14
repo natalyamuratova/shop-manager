@@ -3,6 +3,7 @@ import './goods-tree.css';
 import dataJson from '../../data.json';
 import {AppTree, TreeData} from "../../components/app-tree/AppTree";
 import {AppTreeD3} from "../../components/app-tree-d3/AppTreeD3";
+import {HierarchyCircularNode} from "d3";
 
 interface Good {
     id: string;
@@ -50,12 +51,14 @@ export const GoodsTree = () => {
     const initialData = buildTreeData(dataJson);
     const [data, setData] = useState(initialData);
 
-    const nodeClickHandler = (node: TreeData) => {
+    const nodeClickHandler = (node: HierarchyCircularNode<TreeData>, event: PointerEvent) => {
         console.log(node);
+        console.log(event);
     };
 
-        // <AppTree data={data}/>
     return (
+        // <AppTree data={data}
+        //          onNodeClick={nodeClickHandler}/>
         <AppTreeD3 data={data}
                    onNodeClick={nodeClickHandler}
         ></AppTreeD3>

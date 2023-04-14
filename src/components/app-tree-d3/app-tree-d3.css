@@ -14,3 +14,7 @@ svg {
 .node {
     cursor: pointer;
 }
+
+.node:hover {
+    r: 12;
+}
