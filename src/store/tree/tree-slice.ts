@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import TreeData from '../../models/tree-data';
 import dataJson from '../../data.json';
-import buildTreeData from '../../utils/build-tree-data';
+import { convertArrayToTree } from '../../utils/tree-converters';
 
 export interface TreeState {
     value: TreeData,
@@ -20,7 +20,7 @@ export const treeSlice = createSlice({
 	initialState,
 	reducers: {
 		buildTree: (state: TreeState) => {
-			state.value = buildTreeData(dataJson);
+			state.value = convertArrayToTree(dataJson);
 		},
 		setTree: (state: TreeState, action: PayloadAction<TreeData>) => {
 			state.value = action.payload;
