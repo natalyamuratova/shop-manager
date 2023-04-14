@@ -20,13 +20,16 @@ export const treeSlice = createSlice({
 	initialState,
 	reducers: {
 		buildTree: (state: TreeState) => {
-			state.value = convertArrayToTree(dataJson);
+			state.value = convertArrayToTree(dataJson.items);
 		},
 		setTree: (state: TreeState, action: PayloadAction<TreeData>) => {
 			state.value = action.payload;
 		},
-		deleteLink: (state: TreeState, action: PayloadAction<{ source: TreeData, target: TreeData }>) => {
+		deleteLink: (state: TreeState, action: PayloadAction<{ source: TreeData | null, target: TreeData }>) => {
 			const { source, target } = action.payload;
+			if (!source) {
+				return;
+			}
 
 			const filterChild = (node: TreeData) => {
 				if (node.children) {
