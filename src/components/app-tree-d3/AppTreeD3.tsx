@@ -1,10 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { TreeData } from '../app-tree/AppTree';
 import * as d3 from 'd3';
-import { HierarchyCircularLink, HierarchyCircularNode } from 'd3';
+import { HierarchyCircularLink, HierarchyCircularNode, HierarchyNode, Selection } from 'd3';
 import './app-tree-d3.css';
-import { Selection } from 'd3-selection';
-import { HierarchyNode } from 'd3-hierarchy';
 
 export type TreeNodeEventClickCallback = (node: HierarchyCircularNode<TreeData>, event: PointerEvent) => any;
 export type TreeLinkEventClickCallback = (sourceNode: HierarchyCircularNode<TreeData>, targetNode: HierarchyCircularNode<TreeData>, event: PointerEvent) => any;
@@ -38,7 +36,7 @@ export const AppTreeD3 = (props: AppTreeProps) => {
 			.attr('opacity', 1);
 
 		if (props.nodeClickable) {
-			nodes.attr('class', 'node-clickable');
+			nodes.attr('class', 'node node-clickable');
 		}
 
 		if (props.onNodeClick) {
@@ -73,7 +71,7 @@ export const AppTreeD3 = (props: AppTreeProps) => {
 			.attr('stroke-dashoffset', 0);
 
 		if (props.linkClickable) {
-			links.attr('class', 'link-clickable');
+			links.attr('class', 'link link-clickable');
 		}
 
 		if (props.onLinkClick) {
@@ -108,12 +106,10 @@ export const AppTreeD3 = (props: AppTreeProps) => {
 
 		treeLayout(root);
 
-		// console.log(svgRef.current);
 		const svg = d3.select<Element | null, unknown>(svgRef.current);
 		buildNodes(svg, root);
 		buildLinks(svg, root);
 		buildLabels(svg, root);
-		// console.log(svgRef.current);
 	};
 
 	useEffect(() => {
