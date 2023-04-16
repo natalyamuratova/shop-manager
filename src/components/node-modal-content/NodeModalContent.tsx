@@ -49,7 +49,7 @@ export const NodeModalContent = (props: NodeModalContentProps) => {
 					<p>{props.parentNode?.name}</p>
 				</div>
 			</div>}
-			{props.selectedNode?.children?.length !== 0 && !isProduct(props.selectedNode?.type) && <div className="data-section">
+			{!isProduct(props.selectedNode?.type) && <div className="data-section">
 				<div className="node-data">
 					<h3>{props.selectedNode?.type && ItemTypeNames[getChildNodeType(props.selectedNode.type)]}</h3>
 					<Button onClick={openModal}>Добавить</Button>

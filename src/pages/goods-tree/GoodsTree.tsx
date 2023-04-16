@@ -10,11 +10,12 @@ import { Modal } from 'antd';
 import { NodeModalContent } from '../../components/node-modal-content/NodeModalContent';
 import { TreeActionsToolbar } from '../../components/tree-actions-toolbar/TreeActionsToolbar';
 import { findNode } from '../../utils/data-utils';
+import { TreeHistory } from '../../components/tree-history/TreeHistory';
 
 export const GoodsTree = () => {
 	const dispatch = useDispatch();
 
-	const tree = useSelector((state: RootState) => state.tree.value);
+	const tree = useSelector((state: RootState) => state.tree.currentValue.data);
 	const [selectedNode, setSelectedNode] = useState<TreeData | null>(null);
 	const [parentNode, setParentNode] = useState<TreeData | null>(null);
 	const [childNode, setChildNode] = useState<TreeData | null>(null);
@@ -47,7 +48,6 @@ export const GoodsTree = () => {
 	const nodeModalCancelFn = () => {
 		setIsNodeModalOpen(false);
 	};
-
 
 	const linkClickHandler = (source: HierarchyCircularNode<TreeData>, target: HierarchyCircularNode<TreeData>) => {
 		setParentNode(source.data);
@@ -83,11 +83,13 @@ export const GoodsTree = () => {
 
 	return (
 		<>
-			<AppTreeD3 data={tree}
-				onNodeClick={nodeClickHandler}
-				onLinkClick={linkClickHandler}
-				linkClickable={true}
-			></AppTreeD3>
+			<div className="tree-container">
+				<TreeHistory></TreeHistory>
+				<AppTreeD3 data={tree}
+					onNodeClick={nodeClickHandler}
+					onLinkClick={linkClickHandler}
+				></AppTreeD3>
+			</div>
 			<TreeActionsToolbar/>
 			<Modal title={linkModalTitle} open={isLinkModalOpen} onOk={linkModalAcceptFn} onCancel={linkModalCancelFn}>
 				<div className="modal-content">
