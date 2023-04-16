@@ -1,19 +1,7 @@
-import dataJson from '../data.json';
+import ItemType from '../models/item-type';
 
-export const getAllClusterNames = () => Object.keys(dataJson.clusters);
+export const isCluster = (type?: ItemType) => type === ItemType.CLUSTER;
 
-export const getAllGroupNames = () => Object.values(dataJson.clusters).flatMap(cluster => cluster.groups);
+export const isGroup = (type?: ItemType) => type === ItemType.GROUP;
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-export const getAllGroupsByClusterName = (clusterName: string) => dataJson.clusters[clusterName];
-
-export const getAllItemNames = () => dataJson.items.map(item => item.name);
-
-export const isCluster = (name: string) => !!getAllClusterNames().find(clusterName => clusterName === name);
-
-export const isGroup = (name: string) => !!getAllGroupNames().find(groupName => groupName === name);
-
-export const isItem = (name: string) => !!getAllItemNames().find(itemName => itemName === name);
-
-export const getNodeTypeByName = (name: string) => isCluster(name) ? 'Кластер' : isGroup(name) ? 'Группа' : isItem(name) ? 'Товары' : '';
+export const isProduct = (type?: ItemType) => type === ItemType.PRODUCT;

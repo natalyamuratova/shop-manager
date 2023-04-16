@@ -3,6 +3,7 @@ import TreeData from '../../models/tree-data';
 import dataJson from '../../data.json';
 import { convertArrayToTree, convertTreeToArray } from '../../utils/tree-converters';
 import { writeJsonFile } from 'write-json-file';
+import ItemType from '../../models/item-type';
 
 export interface TreeState {
     value: TreeData,
@@ -12,6 +13,7 @@ const initialState: TreeState = {
 	value: {
 		id: crypto.randomUUID(),
 		name: 'Товары',
+		type: ItemType.ROOT,
 		children: [],
 	},
 };
@@ -21,7 +23,7 @@ export const treeSlice = createSlice({
 	initialState,
 	reducers: {
 		buildTree: (state: TreeState) => {
-			state.value = convertArrayToTree(dataJson.items);
+			state.value = convertArrayToTree(dataJson);
 		},
 		setTree: (state: TreeState, action: PayloadAction<TreeData>) => {
 			state.value = action.payload;
