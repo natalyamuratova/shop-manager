@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import TreeData from '../../models/tree-data';
 import dataJson from '../../data.json';
 import { convertArrayToTree } from '../../utils/tree-converters';
+import ItemType from '../../models/item-type';
 
 export interface TreeState {
     value: TreeData,
@@ -11,6 +12,7 @@ const initialState: TreeState = {
 	value: {
 		id: crypto.randomUUID(),
 		name: 'Товары',
+		type: ItemType.ROOT,
 		children: [],
 	},
 };
@@ -20,7 +22,7 @@ export const treeSlice = createSlice({
 	initialState,
 	reducers: {
 		buildTree: (state: TreeState) => {
-			state.value = convertArrayToTree(dataJson.items);
+			state.value = convertArrayToTree(dataJson);
 		},
 		setTree: (state: TreeState, action: PayloadAction<TreeData>) => {
 			state.value = action.payload;

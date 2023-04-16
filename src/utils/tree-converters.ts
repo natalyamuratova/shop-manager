@@ -1,8 +1,9 @@
 import Item from '../models/item';
 import TreeData from '../models/tree-data';
+import ItemType from '../models/item-type';
 
 export const convertArrayToTree: (data: Item[]) => TreeData = (data: Item[]) => {
-	const tree: TreeData = { name: 'Товары', children: [] };
+	const tree: TreeData = { name: 'Товары', type: ItemType.ROOT, children: [] };
 
 	for (const el of data) {
 		let cluster = tree.children.find((cl) => cl.name === el.cluster);
@@ -10,7 +11,8 @@ export const convertArrayToTree: (data: Item[]) => TreeData = (data: Item[]) => 
 			cluster = {
 				id: crypto.randomUUID(),
 				name: el.cluster,
-				children: []
+				type: ItemType.CLUSTER,
+				children: [],
 			};
 			tree.children.push(cluster);
 		}
@@ -19,6 +21,7 @@ export const convertArrayToTree: (data: Item[]) => TreeData = (data: Item[]) => 
 			group = {
 				id: crypto.randomUUID(),
 				name: el.group,
+				type: ItemType.GROUP,
 				children: [],
 			};
 			cluster.children.push(group);
@@ -28,6 +31,7 @@ export const convertArrayToTree: (data: Item[]) => TreeData = (data: Item[]) => 
 			item = {
 				id: el.id,
 				name: el.name,
+				type: ItemType.PRODUCT,
 				children: [],
 			};
 			group.children.push(item);

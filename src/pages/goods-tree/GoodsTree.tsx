@@ -7,7 +7,8 @@ import { RootState } from '../../store';
 import TreeData from '../../models/tree-data';
 import { buildTree, deleteLink } from '../../store/tree/tree-slice';
 import { Button, Modal } from 'antd';
-import { getNodeTypeByName, isCluster, isItem } from '../../utils/data-utils';
+import { isCluster, isProduct } from '../../utils/data-utils';
+import { ItemTypeNames } from '../../models/item-type';
 
 export const GoodsTree = () => {
 	const dispatch = useDispatch();
@@ -103,18 +104,18 @@ export const GoodsTree = () => {
 			</Modal>
 			<Modal title={nodeModalTitle} open={isNodeModalOpen} onOk={nodeModalAcceptFn} onCancel={nodeModalCancelFn}>
 				<div className="modal-content">
-					{parentNode && !isCluster(selectedNode?.data.name ?? '') && <div className="data-section">
+					{parentNode && !isCluster(selectedNode?.data.type) && <div className="data-section">
 						<div className="node-data">
-							<h3>{getNodeTypeByName(parentNode.data.name ?? '')}</h3>
+							<h3>{ItemTypeNames[parentNode.data.type]}</h3>
 							<Button>Изменить</Button>
 						</div>
 						<div className="node-data">
 							<p>{parentNode?.data.name}</p>
 						</div>
 					</div>}
-					{selectedNode?.children?.length !== 0 && !isItem(selectedNode?.data.name ?? '') && <div className="data-section">
+					{selectedNode?.children?.length !== 0 && !isProduct(selectedNode?.data.type) && <div className="data-section">
 						<div className="node-data">
-							<h3>{getNodeTypeByName(childNodesArr?.[0]?.data.name ?? '')}</h3>
+							<h3>{childNodesArr?.[0]?.data.type && ItemTypeNames[childNodesArr[0].data.type]}</h3>
 							<Button>+</Button>
 						</div>
 						{(childNodesArr ?? []).map(node => <div className='node-data' key={node.data.id}>
