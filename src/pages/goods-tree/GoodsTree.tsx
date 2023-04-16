@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './goods-tree.css';
 import { AppTreeD3 } from '../../components/app-tree-d3/AppTreeD3';
 import { HierarchyCircularNode } from 'd3';
@@ -9,15 +9,16 @@ import { deleteLink } from '../../store/tree/tree-slice';
 import { Modal } from 'antd';
 import { NodeModalContent } from '../../components/node-modal-content/NodeModalContent';
 import { TreeActionsToolbar } from '../../components/tree-actions-toolbar/TreeActionsToolbar';
+import { findNode } from '../../utils/data-utils';
 
 export const GoodsTree = () => {
 	const dispatch = useDispatch();
 
 	const tree = useSelector((state: RootState) => state.tree.value);
-	const [selectedNode, setSelectedNode] = useState<HierarchyCircularNode<TreeData> | null>(null);
-	const [parentNode, setParentNode] = useState<HierarchyCircularNode<TreeData> | null>(null);
-	const [childNode, setChildNode] = useState<HierarchyCircularNode<TreeData> | null>(null);
-	const [childNodesArr, setChildNodesArr] = useState<HierarchyCircularNode<TreeData>[]>([]);
+	const [selectedNode, setSelectedNode] = useState<TreeData | null>(null);
+	const [parentNode, setParentNode] = useState<TreeData | null>(null);
+	const [childNode, setChildNode] = useState<TreeData | null>(null);
+	const [childNodesArr, setChildNodesArr] = useState<TreeData[]>([]);
 
 	const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
 	const [linkModalTitle, setLinkModalTitle] = useState('');
@@ -26,7 +27,7 @@ export const GoodsTree = () => {
 	};
 	const linkModalAcceptFn = () => {
 		if (parentNode && childNode) {
-			dispatch(deleteLink({ source: parentNode.data, target: childNode.data }));
+			dispatch(deleteLink({ source: parentNode, target: childNode }));
 		}
 		setIsLinkModalOpen(false);
 	};
@@ -48,35 +49,37 @@ export const GoodsTree = () => {
 	};
 
 
-	const linkClickHandler = (source: HierarchyCircularNode<TreeData>, target: HierarchyCircularNode<TreeData>, event: PointerEvent) => {
-		setParentNode(source);
-		setChildNode(target);
+	const linkClickHandler = (source: HierarchyCircularNode<TreeData>, target: HierarchyCircularNode<TreeData>) => {
+		setParentNode(source.data);
+		setChildNode(target.data);
 
 		setLinkModalTitle(`${source.data.name} - ${target.data.name}`);
 		showLinkModal();
 	};
-	const nodeClickHandler = (node: HierarchyCircularNode<TreeData>, event: PointerEvent) => {
-		setSelectedNode(node);
-		setParentNode(node.parent);
-		setChildNodesArr(node.children ?? []);
+	const nodeClickHandler = (node: HierarchyCircularNode<TreeData>) => {
+		setSelectedNode(node.data);
+		setParentNode(node.parent?.data ?? null);
+		setChildNodesArr((node.children ?? []).map((child) => child.data));
 
 		setNodeModalTitle(node.data.name);
 		showNodeModal();
 	};
 
-	const [nodesToUnlink, setNodesToUnlink] = useState<HierarchyCircularNode<TreeData>[]>([]);
-	const addNodeToUnlink = (node: HierarchyCircularNode<TreeData>) => { setNodesToUnlink([...nodesToUnlink, node]); };
-	const removeNodeFromUnlink = (node: HierarchyCircularNode<TreeData>) => { setNodesToUnlink(nodesToUnlink.filter(unlinkedNode => unlinkedNode.data.id !== node.data.id )); };
+	const [nodesToUnlink, setNodesToUnlink] = useState<TreeData[]>([]);
+	const addNodeToUnlink = (node: TreeData) => { setNodesToUnlink([...nodesToUnlink, node]); };
+	const removeNodeFromUnlink = (node: TreeData) => { setNodesToUnlink(nodesToUnlink.filter(unlinkedNode => unlinkedNode.id !== node.id )); };
 	const deleteNodesFromChildren = (): void => {
 		nodesToUnlink.forEach(node => {
-			let target = childNodesArr.find(el => el.data.id === node.data.id);
+			const target = childNodesArr.find(el => el.id === node.id);
 			if (!target) {
 				return;
 			}
-			setChildNodesArr(childNodesArr.filter(childNode => childNode.data.id !== target?.data.id));
-			dispatch(deleteLink({ source: selectedNode?.data ?? null, target: target.data }));
+			setChildNodesArr(childNodesArr.filter(childNode => childNode.id !== target?.id));
+			dispatch(deleteLink({ source: selectedNode ?? null, target }));
 		});
 	};
+
+	useEffect(() => setChildNodesArr(findNode(tree, selectedNode?.id ?? '')?.children ?? []), [tree]);
 
 	return (
 		<>
