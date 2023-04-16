@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { getChildItemType, isCluster, isProduct } from '../../utils/data-utils';
 import { ItemTypeNames } from '../../models/item-type';
 import TreeData from '../../models/tree-data';
-import Item from '../../models/item';
+import { Node } from '../../models/node';
 import { useDispatch } from 'react-redux';
 import { addLink } from '../../store/tree/tree-slice';
 import './node-modal-content.css';
@@ -21,7 +21,7 @@ export const NodeModalContent = (props: NodeModalContentProps) => {
 	const dispatch = useDispatch();
 	const isNodeSelectedToUnlink = (node: TreeData) => !!props.nodesToUnlink.find(selectedNode => selectedNode.id === node.id);
 
-	const [newItem, setNewItem] = useState<Partial<Item>>({
+	const [newItem, setNewItem] = useState<Node>({
 		name: '',
 		meaningful: true,
 	});
