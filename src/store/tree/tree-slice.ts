@@ -2,8 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import TreeData from '../../models/tree-data';
 import dataJson from '../../data.json';
 import { convertArrayToTree, convertTreeToArray } from '../../utils/tree-converters';
-import { writeJsonFile } from 'write-json-file';
 import ItemType from '../../models/item-type';
+import {saveFile} from "../../utils/file-utils";
 
 export interface TreeState {
     value: TreeData,
@@ -29,8 +29,13 @@ export const treeSlice = createSlice({
 			state.value = action.payload;
 		},
 		saveTree: (state: TreeState) => {
-			const dataArray = convertTreeToArray(state.value);
-			writeJsonFile('data.json', dataArray);
+			const data = convertTreeToArray(state.value)
+				.filter((node) => (node.meaningful === 'true'));
+			saveFile({
+				data,
+				fileName: 'data.json',
+				contentType: 'application/json',
+			})
 		},
 		deleteLink: (state: TreeState, action: PayloadAction<{ source: TreeData | null, target: TreeData }>) => {
 			const { source, target } = action.payload;
