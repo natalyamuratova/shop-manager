@@ -14,7 +14,7 @@ export interface TreeState {
 }
 
 const historyItem: TreeDataHistory = {
-	time: new Date(),
+	time: new Date().getTime(),
 	data: {
 		id: crypto.randomUUID(),
 		name: ItemTypeNames[ItemType.ROOT],
@@ -39,7 +39,7 @@ export const treeSlice = createSlice({
 		buildTree: (state: TreeState) => {
 			state.currentValue = {
 				data: convertArrayToTree(dataJson),
-				time: new Date(),
+				time: new Date().getTime(),
 			};
 			state.history = [state.currentValue];
 		},
@@ -69,6 +69,12 @@ export const treeSlice = createSlice({
 				children: [],
 			};
 			parentNodeFromTree?.children.push(newNode);
+
+			state.currentValue = {
+				data: state.currentValue.data,
+				time: new Date().getTime(),
+			};
+			state.history.push(state.currentValue);
 		},
 		/**
 		 * Deletes link from the tree by deleting the node from it
@@ -94,7 +100,7 @@ export const treeSlice = createSlice({
 
 			state.currentValue = {
 				data: state.currentValue.data,
-				time: new Date(),
+				time: new Date().getTime(),
 			};
 			state.history.push(state.currentValue);
 		}
