@@ -9,11 +9,12 @@ import { deleteLink } from '../../store/tree/tree-slice';
 import { Modal } from 'antd';
 import { NodeModalContent } from '../../components/node-modal-content/NodeModalContent';
 import { TreeActionsToolbar } from '../../components/tree-actions-toolbar/TreeActionsToolbar';
+import { TreeHistory } from '../../components/tree-history/TreeHistory';
 
 export const GoodsTree = () => {
 	const dispatch = useDispatch();
 
-	const tree = useSelector((state: RootState) => state.tree.value);
+	const tree = useSelector((state: RootState) => state.tree.currentValue.data);
 	const [selectedNode, setSelectedNode] = useState<HierarchyCircularNode<TreeData> | null>(null);
 	const [parentNode, setParentNode] = useState<HierarchyCircularNode<TreeData> | null>(null);
 	const [childNode, setChildNode] = useState<HierarchyCircularNode<TreeData> | null>(null);
@@ -47,7 +48,6 @@ export const GoodsTree = () => {
 		setIsNodeModalOpen(false);
 	};
 
-
 	const linkClickHandler = (source: HierarchyCircularNode<TreeData>, target: HierarchyCircularNode<TreeData>, event: PointerEvent) => {
 		setParentNode(source);
 		setChildNode(target);
@@ -80,11 +80,13 @@ export const GoodsTree = () => {
 
 	return (
 		<>
-			<AppTreeD3 data={tree}
-				onNodeClick={nodeClickHandler}
-				onLinkClick={linkClickHandler}
-				linkClickable={true}
-			></AppTreeD3>
+			<div className="tree-container">
+				<TreeHistory></TreeHistory>
+				<AppTreeD3 data={tree}
+					onNodeClick={nodeClickHandler}
+					onLinkClick={linkClickHandler}
+				></AppTreeD3>
+			</div>
 			<TreeActionsToolbar/>
 			<Modal title={linkModalTitle} open={isLinkModalOpen} onOk={linkModalAcceptFn} onCancel={linkModalCancelFn}>
 				<div className="modal-content">

@@ -15,7 +15,7 @@ interface AppTreeProps {
     onLinkClick?: TreeLinkEventClickCallback;
 }
 
-const MEANINGLESS_COLOR = 'yellow';
+const MEANINGLESS_COLOR = 'lightgray';
 const MEANINGFUL_COLOR = 'black';
 
 export const AppTreeD3 = (props: AppTreeProps) => {
@@ -130,4 +130,4 @@ export const AppTreeD3 = (props: AppTreeProps) => {
 		</div>
 	);
 };
-AppTreeD3.defaultProps = { nodeClickable: true, linkClickable: false };
+AppTreeD3.defaultProps = { nodeClickable: true, linkClickable: true };
