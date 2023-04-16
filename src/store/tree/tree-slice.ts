@@ -5,6 +5,8 @@ import { convertArrayToTree, convertTreeToArray } from '../../utils/tree-convert
 import ItemType, { ItemTypeNames } from '../../models/item-type';
 import { saveFile } from '../../utils/file-utils';
 import { TreeDataHistory } from '../../models/tree-data-history';
+import Item from '../../models/item';
+import { findNode, getChildNodeType } from '../../utils/data-utils';
 
 export interface TreeState {
 	history: TreeDataHistory[],
@@ -44,6 +46,21 @@ export const treeSlice = createSlice({
 			const data = convertTreeToArray(state.currentValue.data).filter((node) => (node.meaningful === 'true'));
 			saveFile({ data, fileName: 'data.json', contentType: 'application/json' });
 		},
+		addLink: (state: TreeState, action: PayloadAction<{ parentNode: TreeData, newItem: Partial<Item> }>) => {
+			const { newItem, parentNode } = action.payload;
+			if (!newItem.name) {
+				return;
+			}
+			const parentNodeFromTree = findNode(state.currentValue.data, parentNode.id ?? '');
+			const newNode: TreeData = {
+				id: crypto.randomUUID(),
+				meaningful: !!newItem.meaningful,
+				name: newItem.name,
+				type: getChildNodeType(parentNode.type),
+				children: [],
+			};
+			parentNodeFromTree?.children.push(newNode);
+		},
 		deleteLink: (state: TreeState, action: PayloadAction<{ source: TreeData | null, target: TreeData }>) => {
 			const { source, target } = action.payload;
 			if (!source) {
@@ -73,6 +90,7 @@ export const treeSlice = createSlice({
 export const {
 	buildTree,
 	setTree,
+	addLink,
 	deleteLink,
 	saveTreeToFile,
 } = treeSlice.actions;

@@ -1,7 +1,7 @@
 import ItemType from './item-type';
 
 interface TreeData {
-	id?: string;
+	id: string;
 	meaningful?: boolean;
 	name: string;
 	type: ItemType,
