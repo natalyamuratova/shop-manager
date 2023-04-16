@@ -1,6 +1,11 @@
 import ItemType from '../models/item-type';
 import TreeData from '../models/tree-data';
 
+/**
+ * Returns node with given id from tree (null of not found)
+ * @param root root of the tree to search from
+ * @param targetId id of the requested node
+ */
 export const findNode = (root: TreeData, targetId: string): TreeData | null => {
 	if (root?.id === targetId) {
 		return root;
@@ -22,4 +27,8 @@ export const isGroup = (type?: ItemType) => type === ItemType.GROUP;
 
 export const isProduct = (type?: ItemType) => type === ItemType.PRODUCT;
 
-export const getChildNodeType = (parentType?: ItemType) => isRoot(parentType) ? ItemType.CLUSTER : isCluster(parentType) ? ItemType.GROUP : ItemType.PRODUCT;
+/**
+ * Returns children type for given type of item
+ * @param parentType type to return children type for
+ */
+export const getChildItemType = (parentType?: ItemType) => isRoot(parentType) ? ItemType.CLUSTER : isCluster(parentType) ? ItemType.GROUP : ItemType.PRODUCT;
