@@ -19,7 +19,6 @@ export const GoodsTree = () => {
 	const [childNode, setChildNode] = useState<HierarchyCircularNode<TreeData> | null>(null);
 	const [childNodesArr, setChildNodesArr] = useState<HierarchyCircularNode<TreeData>[]>([]);
 
-
 	const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
 	const [linkModalTitle, setLinkModalTitle] = useState('');
 	const showLinkModal = () => {
@@ -41,6 +40,7 @@ export const GoodsTree = () => {
 		setIsNodeModalOpen(true);
 	};
 	const nodeModalAcceptFn = () => {
+		deleteNodesFromChildren();
 		setIsNodeModalOpen(false);
 	};
 	const nodeModalCancelFn = () => {
@@ -64,21 +64,18 @@ export const GoodsTree = () => {
 		showNodeModal();
 	};
 
-	const deleteNodeFromChildren = (nodeData: TreeData): void => {
-		let target: TreeData | null = null;
-
-		setChildNodesArr(childNodesArr?.filter(child => {
-			if (child.data.id === nodeData.id) {
-				target = child.data;
-				return false;
+	const [nodesToUnlink, setNodesToUnlink] = useState<HierarchyCircularNode<TreeData>[]>([]);
+	const addNodeToUnlink = (node: HierarchyCircularNode<TreeData>) => { setNodesToUnlink([...nodesToUnlink, node]); };
+	const removeNodeFromUnlink = (node: HierarchyCircularNode<TreeData>) => { setNodesToUnlink(nodesToUnlink.filter(unlinkedNode => unlinkedNode.data.id !== node.data.id )); };
+	const deleteNodesFromChildren = (): void => {
+		nodesToUnlink.forEach(node => {
+			let target = childNodesArr.find(el => el.data.id === node.data.id);
+			if (!target) {
+				return;
 			}
-			return true;
-		}));
-
-		if (!target) {
-			return;
-		}
-		dispatch(deleteLink({ source: selectedNode?.data ?? null, target }));
+			setChildNodesArr(childNodesArr.filter(childNode => childNode.data.id !== target?.data.id));
+			dispatch(deleteLink({ source: selectedNode?.data ?? null, target: target.data }));
+		});
 	};
 
 	return (
@@ -95,7 +92,13 @@ export const GoodsTree = () => {
 				</div>
 			</Modal>
 			<Modal title={nodeModalTitle} open={isNodeModalOpen} onOk={nodeModalAcceptFn} onCancel={nodeModalCancelFn}>
-				<NodeModalContent parentNode={parentNode} selectedNode={selectedNode} childNodes={childNodesArr} deleteChildAction={deleteNodeFromChildren}/>
+				<NodeModalContent
+					parentNode={parentNode}
+					selectedNode={selectedNode}
+					childNodes={childNodesArr}
+					nodesToUnlink={nodesToUnlink}
+					addNodeToUnlink={addNodeToUnlink}
+					removeNodeFromUnlink={removeNodeFromUnlink}/>
 			</Modal>
 		</>
 	);

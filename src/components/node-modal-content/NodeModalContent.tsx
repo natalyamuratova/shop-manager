@@ -6,13 +6,17 @@ import { HierarchyCircularNode } from 'd3';
 import TreeData from '../../models/tree-data';
 
 interface NodeModalContentProps {
-	parentNode: HierarchyCircularNode<TreeData> | null,
-	selectedNode: HierarchyCircularNode<TreeData> | null,
-	childNodes: HierarchyCircularNode<TreeData>[]
-	deleteChildAction: (node: TreeData) => void,
+	parentNode: HierarchyCircularNode<TreeData> | null;
+	selectedNode: HierarchyCircularNode<TreeData> | null;
+	childNodes: HierarchyCircularNode<TreeData>[];
+	nodesToUnlink: HierarchyCircularNode<TreeData>[];
+	addNodeToUnlink: (node: HierarchyCircularNode<TreeData>) => void;
+	removeNodeFromUnlink: (node: HierarchyCircularNode<TreeData>) => void;
 }
 
 export const NodeModalContent = (props: NodeModalContentProps) => {
+	const isNodeSelectedToUnlink = (node: HierarchyCircularNode<TreeData>) => !!props.nodesToUnlink.find(selectedNode => selectedNode.data.id === node.data.id);
+
 	return (
 		<div className="modal-content">
 			{props.parentNode && !isCluster(props.selectedNode?.data.type) && <div className="data-section">
@@ -31,7 +35,8 @@ export const NodeModalContent = (props: NodeModalContentProps) => {
 				</div>
 				{(props.childNodes ?? []).map(node => <div className='node-data' key={node.data.id}>
 					<p key={node.data.name}>{node.data.name}</p>
-					<Button onClick={() => props.deleteChildAction(node.data)}>-</Button>
+					{!isNodeSelectedToUnlink(node) && <Button onClick={() => props.addNodeToUnlink(node)}>Удалить</Button>}
+					{isNodeSelectedToUnlink(node) && <Button onClick={() => props.removeNodeFromUnlink(node)}>Отмена</Button>}
 				</div>)}
 			</div>}
 		</div>
