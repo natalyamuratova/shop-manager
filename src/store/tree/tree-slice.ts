@@ -7,6 +7,7 @@ import { saveFile } from '../../utils/file-utils';
 import { TreeDataHistory } from '../../models/tree-data-history';
 import Item from '../../models/item';
 import { findNode, getChildItemType } from '../../utils/data-utils';
+import {Node} from "../../models/node";
 
 export interface TreeState {
 	history: TreeDataHistory[],
@@ -55,7 +56,7 @@ export const treeSlice = createSlice({
 		 * @param state
 		 * @param action
 		 */
-		addLink: (state: TreeState, action: PayloadAction<{ parentNode: TreeData, newItem: Partial<Item> }>) => {
+		addLink: (state: TreeState, action: PayloadAction<{ parentNode: TreeData, newItem: Node }>) => {
 			const { newItem, parentNode } = action.payload;
 			if (!newItem.name) {
 				return;

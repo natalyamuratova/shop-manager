@@ -49,13 +49,12 @@ export const convertArrayToTree: (data: Item[]) => TreeData = (data: Item[]) => 
  * Converts TreeData structure to an array of items
  * @param tree TreeData structure
  */
-export const convertTreeToArray: (tree: TreeData) => Item[] = (tree: TreeData) => {
+export const convertTreeToArray: (tree: TreeData) => Partial<Item>[] = (tree: TreeData) => {
 	const items = [];
 	for (const clusterEl of tree.children) {
 		for (const groupEl of clusterEl.children) {
 			for (const itemEl of groupEl.children) {
-				const item: Item = {
-					meaningful: String(itemEl.meaningful ?? false),
+				const item: Partial<Item> = {
 					name: itemEl.name,
 					group: groupEl.name,
 					cluster: clusterEl.name,
