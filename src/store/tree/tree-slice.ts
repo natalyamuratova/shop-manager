@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import TreeData from '../../models/tree-data';
 import dataJson from '../../data.json';
-import { convertArrayToTree } from '../../utils/tree-converters';
+import { convertArrayToTree, convertTreeToArray } from '../../utils/tree-converters';
+import { writeJsonFile } from 'write-json-file';
 import ItemType from '../../models/item-type';
 
 export interface TreeState {
@@ -27,6 +28,10 @@ export const treeSlice = createSlice({
 		setTree: (state: TreeState, action: PayloadAction<TreeData>) => {
 			state.value = action.payload;
 		},
+		saveTree: (state: TreeState) => {
+			const dataArray = convertTreeToArray(state.value);
+			writeJsonFile('data.json', dataArray);
+		},
 		deleteLink: (state: TreeState, action: PayloadAction<{ source: TreeData | null, target: TreeData }>) => {
 			const { source, target } = action.payload;
 			if (!source) {
@@ -47,6 +52,6 @@ export const treeSlice = createSlice({
 	},
 });
 
-export const { buildTree, setTree, deleteLink } = treeSlice.actions;
+export const { buildTree, setTree, deleteLink, saveTree } = treeSlice.actions;
 
 export default treeSlice.reducer;
