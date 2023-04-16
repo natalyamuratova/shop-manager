@@ -26,10 +26,10 @@ export const convertArrayToTree: (data: Item[]) => TreeData = (data: Item[]) => 
 			};
 			cluster.children.push(group);
 		}
-		let item = group.children.find((it) => it.id === el.id);
+		let item = group.children.find((it) => it.name === el.name);
 		if (!item) {
 			item = {
-				id: el.id,
+				id: crypto.randomUUID(),
 				meaningful: el.meaningful === 'true',
 				name: el.name,
 				type: ItemType.PRODUCT,
@@ -47,7 +47,6 @@ export const convertTreeToArray: (tree: TreeData) => Item[] = (tree: TreeData) =
 		for (const groupEl of clusterEl.children) {
 			for (const itemEl of groupEl.children) {
 				const item: Item = {
-					id: itemEl.id ?? '',
 					meaningful: String(itemEl.meaningful ?? false),
 					name: itemEl.name,
 					group: groupEl.name,
