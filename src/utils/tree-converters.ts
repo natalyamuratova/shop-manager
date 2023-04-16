@@ -27,6 +27,7 @@ export const convertArrayToTree: (data: Item[]) => TreeData = (data: Item[]) => 
 		if (!item) {
 			item = {
 				id: el.id,
+				meaningful: el.meaningful === 'true',
 				name: el.name,
 				children: [],
 			};
@@ -36,13 +37,14 @@ export const convertArrayToTree: (data: Item[]) => TreeData = (data: Item[]) => 
 	return tree;
 };
 
-const convertTreeToArray: (tree: TreeData) => Item[] = (tree: TreeData) => {
+export const convertTreeToArray: (tree: TreeData) => Item[] = (tree: TreeData) => {
 	const items = [];
 	for (const clusterEl of tree.children) {
 		for (const groupEl of clusterEl.children) {
 			for (const itemEl of groupEl.children) {
 				const item: Item = {
 					id: itemEl.id ?? '',
+					meaningful: String(itemEl.meaningful ?? false),
 					name: itemEl.name,
 					group: groupEl.name,
 					cluster: clusterEl.name,

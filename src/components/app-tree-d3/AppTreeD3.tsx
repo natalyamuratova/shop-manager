@@ -56,7 +56,7 @@ export const AppTreeD3 = (props: AppTreeProps) => {
 			.join('path')
 			.attr('class', 'link')
 			.attr('fill', 'none')
-			.attr('stroke', 'black')
+			.attr('stroke', (link) => link.target.data.meaningful === false ? 'yellow' : 'black')
 			.attr('d', linkGenerator)
 			.attr('stroke-dasharray', function () {
 				const length = (this as SVGGeometryElement).getTotalLength();
