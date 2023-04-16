@@ -3,7 +3,9 @@ import TreeData from '../../models/tree-data';
 import dataJson from '../../data.json';
 import { convertArrayToTree, convertTreeToArray } from '../../utils/tree-converters';
 import ItemType from '../../models/item-type';
-import {saveFile} from "../../utils/file-utils";
+import { saveFile } from '../../utils/file-utils';
+import Item from '../../models/item';
+import { findNode, getChildNodeType } from '../../utils/data-utils';
 
 export interface TreeState {
     value: TreeData,
@@ -35,7 +37,22 @@ export const treeSlice = createSlice({
 				data,
 				fileName: 'data.json',
 				contentType: 'application/json',
-			})
+			});
+		},
+		addLink: (state: TreeState, action: PayloadAction<{ parentNode: TreeData, newItem: Partial<Item> }>) => {
+			const { newItem, parentNode } = action.payload;
+			if (!newItem.name) {
+				return;
+			}
+			const parentNodeFromTree = findNode(state.value, parentNode.id ?? '');
+			const newNode: TreeData = {
+				id: crypto.randomUUID(),
+				meaningful: !!newItem.meaningful,
+				name: newItem.name,
+				type: getChildNodeType(parentNode.type),
+				children: [],
+			};
+			parentNodeFromTree?.children.push(newNode);
 		},
 		deleteLink: (state: TreeState, action: PayloadAction<{ source: TreeData | null, target: TreeData }>) => {
 			const { source, target } = action.payload;
@@ -57,6 +74,6 @@ export const treeSlice = createSlice({
 	},
 });
 
-export const { buildTree, setTree, deleteLink, saveTree } = treeSlice.actions;
+export const { buildTree, setTree, addLink, deleteLink, saveTree } = treeSlice.actions;
 
 export default treeSlice.reducer;

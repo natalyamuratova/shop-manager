@@ -3,7 +3,7 @@ import TreeData from '../models/tree-data';
 import ItemType from '../models/item-type';
 
 export const convertArrayToTree: (data: Item[]) => TreeData = (data: Item[]) => {
-	const tree: TreeData = { name: 'Товары', type: ItemType.ROOT, children: [] };
+	const tree: TreeData = { id: crypto.randomUUID(), name: 'Товары', type: ItemType.ROOT, children: [] };
 
 	for (const el of data) {
 		let cluster = tree.children.find((cl) => cl.name === el.cluster);
