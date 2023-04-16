@@ -9,8 +9,8 @@ export const TreeHistory = () => {
 
 	const history = useSelector((state: RootState) => state.tree.history);
 	const selectedTime = useSelector((state: RootState) => state.tree.currentValue.time);
-	const formatDate = (date: Date) => (date.toLocaleString());
-	const isSelectedDate = (date: Date) => (selectedTime.getTime() === date.getTime());
+	const formatDate = (date: number) => (new Date(date).toLocaleString());
+	const isSelectedDate = (date: number) => (selectedTime === date);
 
 	return (
 		<div className="history-container">

@@ -97,14 +97,16 @@ export const GoodsTree = () => {
 
 	return (
 		<>
-			<div className="tree-container">
-				<TreeHistory></TreeHistory>
-				<AppTreeD3 data={tree}
-					onNodeClick={nodeClickHandler}
-					onLinkClick={linkClickHandler}
-				></AppTreeD3>
+			<div className="goods-tree-container">
+				<div className="tree-container">
+					<TreeHistory></TreeHistory>
+					<AppTreeD3 data={tree}
+						onNodeClick={nodeClickHandler}
+						onLinkClick={linkClickHandler}
+					></AppTreeD3>
+				</div>
+				<TreeActionsToolbar/>
 			</div>
-			<TreeActionsToolbar/>
 			<Modal title={linkModalTitle} open={isLinkModalOpen} onOk={linkModalAcceptFn} onCancel={linkModalCancelFn}>
 				<div className="modal-content">
 					<p>Вы уверены, что хотите удалить связь?</p>

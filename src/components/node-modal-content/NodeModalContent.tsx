@@ -6,6 +6,7 @@ import TreeData from '../../models/tree-data';
 import Item from '../../models/item';
 import { useDispatch } from 'react-redux';
 import { addLink } from '../../store/tree/tree-slice';
+import './node-modal-content.css';
 
 interface NodeModalContentProps {
 	parentNode: TreeData | null;
