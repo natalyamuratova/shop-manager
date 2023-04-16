@@ -1,6 +1,6 @@
 import { Button, Checkbox, Input, Modal } from 'antd';
 import React, { useState } from 'react';
-import { getChildNodeType, isCluster, isProduct } from '../../utils/data-utils';
+import { getChildItemType, isCluster, isProduct } from '../../utils/data-utils';
 import { ItemTypeNames } from '../../models/item-type';
 import TreeData from '../../models/tree-data';
 import Item from '../../models/item';
@@ -51,7 +51,7 @@ export const NodeModalContent = (props: NodeModalContentProps) => {
 			</div>}
 			{!isProduct(props.selectedNode?.type) && <div className="data-section">
 				<div className="node-data">
-					<h3>{props.selectedNode?.type && ItemTypeNames[getChildNodeType(props.selectedNode.type)]}</h3>
+					<h3>{props.selectedNode?.type && ItemTypeNames[getChildItemType(props.selectedNode.type)]}</h3>
 					<Button onClick={openModal}>Добавить</Button>
 				</div>
 				{(props.childNodes ?? []).map(node => <div className='node-data' key={node.id}>

@@ -2,6 +2,10 @@ import Item from '../models/item';
 import TreeData from '../models/tree-data';
 import ItemType from '../models/item-type';
 
+/**
+ * Converts array of Items to TreeData structure
+ * @param data array of items
+ */
 export const convertArrayToTree: (data: Item[]) => TreeData = (data: Item[]) => {
 	const tree: TreeData = { id: crypto.randomUUID(), name: 'Товары', type: ItemType.ROOT, children: [] };
 
@@ -41,6 +45,10 @@ export const convertArrayToTree: (data: Item[]) => TreeData = (data: Item[]) => 
 	return tree;
 };
 
+/**
+ * Converts TreeData structure to an array of items
+ * @param tree TreeData structure
+ */
 export const convertTreeToArray: (tree: TreeData) => Item[] = (tree: TreeData) => {
 	const items = [];
 	for (const clusterEl of tree.children) {

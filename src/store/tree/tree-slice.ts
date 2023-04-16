@@ -6,7 +6,7 @@ import ItemType, { ItemTypeNames } from '../../models/item-type';
 import { saveFile } from '../../utils/file-utils';
 import { TreeDataHistory } from '../../models/tree-data-history';
 import Item from '../../models/item';
-import { findNode, getChildNodeType } from '../../utils/data-utils';
+import { findNode, getChildItemType } from '../../utils/data-utils';
 
 export interface TreeState {
 	history: TreeDataHistory[],
@@ -32,6 +32,10 @@ export const treeSlice = createSlice({
 	name: 'tree',
 	initialState,
 	reducers: {
+		/**
+		 * Builds tree from initial data (array of items)
+		 * @param state
+		 */
 		buildTree: (state: TreeState) => {
 			state.currentValue = {
 				data: convertArrayToTree(dataJson),
@@ -46,6 +50,11 @@ export const treeSlice = createSlice({
 			const data = convertTreeToArray(state.currentValue.data).filter((node) => (node.meaningful === 'true'));
 			saveFile({ data, fileName: 'data.json', contentType: 'application/json' });
 		},
+		/**
+		 * Adds new link to tree by inserting new node to it
+		 * @param state
+		 * @param action
+		 */
 		addLink: (state: TreeState, action: PayloadAction<{ parentNode: TreeData, newItem: Partial<Item> }>) => {
 			const { newItem, parentNode } = action.payload;
 			if (!newItem.name) {
@@ -56,11 +65,16 @@ export const treeSlice = createSlice({
 				id: crypto.randomUUID(),
 				meaningful: !!newItem.meaningful,
 				name: newItem.name,
-				type: getChildNodeType(parentNode.type),
+				type: getChildItemType(parentNode.type),
 				children: [],
 			};
 			parentNodeFromTree?.children.push(newNode);
 		},
+		/**
+		 * Deletes link from the tree by deleting the node from it
+		 * @param state
+		 * @param action
+		 */
 		deleteLink: (state: TreeState, action: PayloadAction<{ source: TreeData | null, target: TreeData }>) => {
 			const { source, target } = action.payload;
 			if (!source) {
