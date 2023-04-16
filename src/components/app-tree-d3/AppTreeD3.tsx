@@ -15,6 +15,9 @@ interface AppTreeProps {
     onLinkClick?: TreeLinkEventClickCallback;
 }
 
+const MEANINGLESS_COLOR = 'yellow';
+const MEANINGFUL_COLOR = 'black';
+
 export const AppTreeD3 = (props: AppTreeProps) => {
 	const { data } = props;
 	const wrapperRef = useRef<HTMLDivElement>(null);
@@ -26,7 +29,7 @@ export const AppTreeD3 = (props: AppTreeProps) => {
 			.join('circle')
 			.attr('class', 'node')
 			.attr('r', 10)
-			.attr('fill', 'black')
+			.attr('fill', (node) => node.data.meaningful === false ? MEANINGLESS_COLOR : MEANINGFUL_COLOR)
 			.attr('cx', node => node.y)
 			.attr('cy', node => node.x)
 			.attr('opacity', 0)
@@ -56,7 +59,7 @@ export const AppTreeD3 = (props: AppTreeProps) => {
 			.join('path')
 			.attr('class', 'link')
 			.attr('fill', 'none')
-			.attr('stroke', (link) => link.target.data.meaningful === false ? 'yellow' : 'black')
+			.attr('stroke', (link) => link.target.data.meaningful === false ? MEANINGLESS_COLOR : MEANINGFUL_COLOR)
 			.attr('d', linkGenerator)
 			.attr('stroke-dasharray', function () {
 				const length = (this as SVGGeometryElement).getTotalLength();
