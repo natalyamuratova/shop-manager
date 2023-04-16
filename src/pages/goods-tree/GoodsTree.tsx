@@ -16,10 +16,20 @@ export const GoodsTree = () => {
 	const dispatch = useDispatch();
 
 	const tree = useSelector((state: RootState) => state.tree.currentValue.data);
+
 	const [selectedNode, setSelectedNode] = useState<TreeData | null>(null);
 	const [parentNode, setParentNode] = useState<TreeData | null>(null);
 	const [childNode, setChildNode] = useState<TreeData | null>(null);
 	const [childNodesArr, setChildNodesArr] = useState<TreeData[]>([]);
+	const [nodesToUnlink, setNodesToUnlink] = useState<TreeData[]>([]);
+
+	const clearNodesData = () => {
+		setSelectedNode(null);
+		setParentNode(null);
+		setChildNode(null);
+		setChildNodesArr([]);
+		setNodesToUnlink([]);
+	};
 
 	const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
 	const [linkModalTitle, setLinkModalTitle] = useState('');
@@ -30,9 +40,11 @@ export const GoodsTree = () => {
 		if (parentNode && childNode) {
 			dispatch(deleteLink({ source: parentNode, target: childNode }));
 		}
+		clearNodesData();
 		setIsLinkModalOpen(false);
 	};
 	const linkModalCancelFn = () => {
+		clearNodesData();
 		setIsLinkModalOpen(false);
 	};
 
@@ -43,9 +55,11 @@ export const GoodsTree = () => {
 	};
 	const nodeModalAcceptFn = () => {
 		deleteNodesFromChildren();
+		clearNodesData();
 		setIsNodeModalOpen(false);
 	};
 	const nodeModalCancelFn = () => {
+		clearNodesData();
 		setIsNodeModalOpen(false);
 	};
 
@@ -65,7 +79,6 @@ export const GoodsTree = () => {
 		showNodeModal();
 	};
 
-	const [nodesToUnlink, setNodesToUnlink] = useState<TreeData[]>([]);
 	const addNodeToUnlink = (node: TreeData) => { setNodesToUnlink([...nodesToUnlink, node]); };
 	const removeNodeFromUnlink = (node: TreeData) => { setNodesToUnlink(nodesToUnlink.filter(unlinkedNode => unlinkedNode.id !== node.id )); };
 	const deleteNodesFromChildren = (): void => {
@@ -79,6 +92,7 @@ export const GoodsTree = () => {
 		});
 	};
 
+	/* Synchronize children of selected node in case of new one's been added through ui  */
 	useEffect(() => setChildNodesArr(findNode(tree, selectedNode?.id ?? '')?.children ?? []), [tree]);
 
 	return (
