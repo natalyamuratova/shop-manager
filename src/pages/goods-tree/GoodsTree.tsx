@@ -38,7 +38,7 @@ export const GoodsTree = () => {
 	};
 	const linkModalAcceptFn = () => {
 		if (parentNode && childNode) {
-			dispatch(deleteLink({ source: parentNode, target: childNode }));
+			dispatch(deleteLink({ source: parentNode, target: [childNode] }));
 		}
 		clearNodesData();
 		setIsLinkModalOpen(false);
@@ -82,13 +82,16 @@ export const GoodsTree = () => {
 	const addNodeToUnlink = (node: TreeData) => { setNodesToUnlink([...nodesToUnlink, node]); };
 	const removeNodeFromUnlink = (node: TreeData) => { setNodesToUnlink(nodesToUnlink.filter(unlinkedNode => unlinkedNode.id !== node.id )); };
 	const deleteNodesFromChildren = (): void => {
+		if (nodesToUnlink.length === 0) {
+			return;
+		}
+		dispatch(deleteLink({ source: selectedNode ?? null, target: nodesToUnlink }));
 		nodesToUnlink.forEach(node => {
 			const target = childNodesArr.find(el => el.id === node.id);
 			if (!target) {
 				return;
 			}
 			setChildNodesArr(childNodesArr.filter(childNode => childNode.id !== target?.id));
-			dispatch(deleteLink({ source: selectedNode ?? null, target }));
 		});
 	};
 

@@ -81,27 +81,20 @@ export const treeSlice = createSlice({
 		 * @param state
 		 * @param action
 		 */
-		deleteLink: (state: TreeState, action: PayloadAction<{ source: TreeData | null, target: TreeData }>) => {
+		deleteLink: (state: TreeState, action: PayloadAction<{ source: TreeData | null, target: TreeData[] }>) => {
 			const { source, target } = action.payload;
 			if (!source) {
 				return;
 			}
 
-			const filterChild = (node: TreeData) => {
-				if (node.children) {
-					node.children.forEach(child => filterChild(child));
-				}
-				if (node.id === source.id) {
-					node.children = node.children.filter(child => child.id !== target.id);
-				}
-			};
+			const filteredChildren = source.children.filter((childNode) => !target.find(targetNode => targetNode.id === childNode.id));
+			const parentNodeFromStateTree = findNode(state.currentValue.data, source.id);
+			if (!parentNodeFromStateTree) {
+				return;
+			}
+			parentNodeFromStateTree.children = filteredChildren;
 
-			filterChild(state.currentValue.data);
-
-			state.currentValue = {
-				data: state.currentValue.data,
-				time: new Date().getTime(),
-			};
+			state.currentValue.time = new Date().getTime();
 			state.history.push(state.currentValue);
 		}
 	},
