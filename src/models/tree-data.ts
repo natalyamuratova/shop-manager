@@ -1,9 +1,8 @@
 import ItemType from './item-type';
+import { Node } from './node';
 
-interface TreeData {
+interface TreeData extends Node {
 	id: string;
-	meaningful?: boolean;
-	name: string;
 	type: ItemType,
 	children: TreeData[];
 }
